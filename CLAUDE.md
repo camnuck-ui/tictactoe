@@ -22,5 +22,6 @@ Everything lives in `tictactoe.html` — HTML structure, CSS, and JavaScript are
 ## Git & GitHub
 
 - Remote: `https://github.com/camnuck-ui/tictactoe`
-- Always commit and push after meaningful changes so there is a saved version to revert to.
-- Use descriptive commit messages that explain *what* changed and *why*.
+- **After every meaningful unit of work, commit and push immediately.** Do not batch up multiple features or fixes into one commit — commit as you go so there is always a recoverable state on GitHub.
+- Write clean, descriptive commit messages that explain *what* changed and *why* (not just "update file").
+- This applies to all work: new features, bug fixes, refactors, and config changes.
