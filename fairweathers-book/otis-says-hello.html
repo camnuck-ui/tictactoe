@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Otis Says Hello</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Nunito:wght@600;800&family=Patrick+Hand&display=swap" rel="stylesheet">
+<style>@page { size: 1920px 1080px; margin: 0; }
+:root {
+  --paper: #fbf3e2; --line: #cfe0ef; --ink: #2d2a33; --orange: #e8893a; --blue: #3d8fd1;
+  --red: #e3503e; --green: #2f7d4f; --note: #fffdf6;
+  --body: "Nunito", "Segoe UI", "Comic Sans MS", sans-serif;
+  --hand: "Patrick Hand", "Segoe Print", "Ink Free", "Comic Sans MS", cursive;
+  --head: "Baloo 2", "Nunito", "Segoe UI", "Comic Sans MS", sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: #1b1511; }
+body { font-family: var(--body); color: var(--ink); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+/* ---------- page shell ---------- */
+#stage { position: absolute; left: 50%; top: 50%; width: 1920px; height: 1080px; transform-origin: 0 0; }
+.page {
+  position: relative; width: 1920px; height: 1080px; overflow: hidden; display: none;
+  background-color: var(--paper);
+  background-image:
+    linear-gradient(var(--line) 1.5px, transparent 1.5px),
+    linear-gradient(90deg, var(--line) 1.5px, transparent 1.5px);
+  background-size: 40px 40px;
+  page-break-after: always; break-after: page;
+}
+.page.active { display: block; }
+.page.cover, .page.journal { background-size: cover; background-position: center; }
+.page.journal { background-size: 100% 100%; }
+
+/* ---------- ribbon heading ---------- */
+.ribbon { position: absolute; left: 60px; top: 38px; height: 100px; padding: 0 64px; display: flex; align-items: center;
+  background: #fff9ec; border: 5px solid var(--orange); border-radius: 6px; transform: rotate(-1deg);
+  box-shadow: 0 5px 0 rgba(232,137,58,.25); }
+.ribbon::before, .ribbon::after { content: ""; position: absolute; top: 18px; width: 44px; height: 100%;
+  border: 5px solid var(--orange); background: #fff9ec; z-index: -1; }
+.ribbon::before { left: -34px; clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%, 40% 50%); }
+.ribbon::after { right: -34px; clip-path: polygon(0 0, 100% 0, 60% 50%, 100% 100%, 0 100%); }
+.ribbon span { font: 800 58px/1 var(--head); color: #3a342c; letter-spacing: .5px; }
+.ribbon.wide { left: 90px; }
+
+/* ---------- photo ---------- */
+.photo { position: absolute; left: 60px; top: 170px; width: 1132px; height: 651px; padding: 16px; background: #fff;
+  border-radius: 6px; box-shadow: 0 10px 28px rgba(60,40,10,.28); transform: rotate(-.6deg); }
+.pic { position: relative; width: 1100px; height: 619px; background-repeat: no-repeat; border-radius: 2px; overflow: hidden; }
+.ovl { position: absolute; inset: 0; }
+.tape { position: absolute; width: 150px; height: 44px; background: rgba(232,137,58,.78); opacity: .9; box-shadow: 0 2px 4px rgba(0,0,0,.12); }
+.photo .t1 { left: 80px; top: -22px; transform: rotate(-6deg); background: rgba(227,80,62,.78); }
+.photo .t2 { right: 80px; top: -22px; transform: rotate(5deg); background: rgba(100,178,230,.8); }
+
+/* ---------- stickers ---------- */
+.stickers { position: absolute; left: 70px; top: 850px; width: 1120px; height: 200px; display: flex; gap: 34px; align-items: center; }
+.note { position: relative; background: var(--note); border: 3px solid #e4d9bd; border-radius: 10px; padding: 16px 22px;
+  box-shadow: 0 6px 14px rgba(60,40,10,.22); }
+.note .tape { width: 110px; height: 32px; left: 50%; top: -18px; margin-left: -55px; background: rgba(100,178,230,.75); }
+.fact { display: flex; align-items: center; gap: 18px; width: 640px; min-height: 150px; }
+.fact p { font: 800 34px/1.2 var(--hand); color: #3a342c; }
+.fact b { color: var(--orange); }
+.dd svg { display: block; }
+.doodle svg { display: block; }
+.doodle { position: relative; }
+.step { display: flex; align-items: center; gap: 14px; padding: 12px 26px 12px 14px; border-radius: 80px; background: #ffe9a8;
+  border: 4px solid #f0b93a; box-shadow: 0 5px 10px rgba(60,40,10,.2); }
+.step b { display: grid; place-items: center; width: 62px; height: 62px; border-radius: 50%; background: var(--red); color: #fff;
+  font: 800 38px/1 var(--head); }
+.step span { font: 800 32px/1.1 var(--hand); color: #4a3d1f; max-width: 260px; }
+.wordcard { width: 400px; text-align: center; padding: 12px 18px 14px; }
+.wordcard .lab { font: 800 24px/1 var(--hand); color: var(--red); text-transform: uppercase; letter-spacing: 2px; }
+.wordcard .zh { font: 800 74px/1.05 "Microsoft JhengHei", "PingFang HK", "Noto Sans TC", sans-serif; color: #2f5d8a; }
+.wordcard .say { font: 800 44px/1 var(--head); color: var(--orange); margin-bottom: 4px; }
+.wordcard p { font: 800 26px/1.15 var(--hand); color: #4a4438; }
+.gus { position: absolute; left: 1520px; top: -110px; width: 250px; height: 310px; padding: 6px; background: #fff; }
+.gus img { position: absolute; left: 50%; top: 14px; height: 250px; transform: translateX(-50%); }
+.gus .cap { position: absolute; bottom: 8px; left: 0; right: 0; text-align: center; font: 800 34px/1 var(--hand); color: #6b3fa0; }
+
+/* ---------- text ---------- */
+.text { position: absolute; left: 1250px; top: 170px; width: 610px; font: 600 37px/1.43 var(--body); }
+.text p { margin-bottom: 20px; }
+.text b { color: var(--orange); font-weight: 800; }
+.pno { position: absolute; right: 36px; bottom: 26px; font: 800 30px/1 var(--hand); color: #9aa8b6; }
+.pno.light { color: #6b5a3f; }
+
+/* ---------- cover ---------- */
+.cover-band { position: absolute; left: 0; right: 0; bottom: 0; height: 330px; padding: 36px 80px 0; text-align: center;
+  background: linear-gradient(to bottom, rgba(251,243,226,0), rgba(251,243,226,.94) 22%, #fbf3e2 40%); }
+.cover-band .series { font: 800 34px/1 var(--hand); color: var(--blue); letter-spacing: 1.5px; margin-top: 48px; }
+.cover-band h1 { font: 800 148px/1 var(--head); color: var(--orange); text-shadow: 4px 5px 0 #fff, 6px 8px 0 rgba(0,0,0,.08); margin-top: 6px; }
+.cover-sub { font: 700 36px/1.2 var(--body); color: #5d554a; margin-top: 8px; }
+
+/* ---------- crew page ---------- */
+.lineup { position: absolute; left: 60px; top: 160px; width: 1440px; height: 754px; background: #fff; border-radius: 10px;
+  box-shadow: 0 10px 28px rgba(60,40,10,.25); }
+.lineup img { width: 100%; height: 100%; display: block; border-radius: 10px; }
+.lineup span { position: absolute; top: 758px; transform: translateX(-50%); font: 800 44px/1 var(--hand); color: #3a342c; white-space: nowrap; }
+.pawcard { position: absolute; left: 1545px; top: 230px; width: 340px; padding: 14px 14px 18px; transform: rotate(3deg); }
+.pawpic { width: 310px; height: 310px; background-repeat: no-repeat; border-radius: 2px; }
+.pawcard .cap { margin-top: 12px; font: 800 44px/1 var(--hand); color: var(--green); text-align: center; }
+.pawcard .cap small { display: block; margin-top: 6px; font: 800 26px/1.15 var(--hand); color: #5d554a; }
+
+/* ---------- journal page ---------- */
+.polaroid { position: absolute; left: 12.5%; top: 18.8%; width: 27%; height: 50.2%; transform: rotate(-6deg); }
+.ppic { width: 100%; height: 100%; background-size: 210% auto; background-position: 62% 40%; background-repeat: no-repeat; }
+.pcap { position: absolute; left: -2%; right: -2%; top: 105%; text-align: center; font: 800 36px/1.05 var(--hand); color: #4a4438; }
+
+/* ---------- end page ---------- */
+.endcol { position: absolute; left: 90px; top: 190px; width: 1030px; }
+.endcol .big { font: 800 78px/1.12 var(--head); color: #3a342c; }
+.steps3 { display: flex; gap: 22px; margin: 36px 0 40px; }
+.steps3 div { display: flex; align-items: center; gap: 12px; padding: 10px 24px 10px 12px; background: #ffe9a8; border: 4px solid #f0b93a; border-radius: 70px;
+  font: 800 31px/1.1 var(--hand); color: #4a3d1f; }
+.steps3 b { display: grid; place-items: center; width: 54px; height: 54px; border-radius: 50%; background: var(--red); color: #fff; font: 800 32px/1 var(--head); flex: none; }
+.quiz { background: var(--note); border: 3px dashed #e0a655; border-radius: 16px; padding: 22px 32px; }
+.quiz h3 { font: 800 44px/1 var(--hand); color: var(--blue); margin-bottom: 10px; }
+.quiz p { font: 700 34px/1.5 var(--body); }
+.quiz i { color: var(--orange); font-style: normal; font-weight: 800; }
+.rudder { position: absolute; left: 1250px; top: 110px; }
+.wordcard.big { width: 540px; padding: 20px 24px 22px; transform: rotate(2deg); }
+.wordcard.big img { display: block; margin: 8px auto 4px; height: 470px; filter: drop-shadow(0 6px 5px rgba(0,0,0,.25)); }
+.wordcard.big .zh { font-size: 88px; }
+.wordcard.big .say { font-size: 56px; }
+.theend { position: absolute; left: 90px; bottom: 44px; font: 800 76px/1 var(--hand); color: var(--orange); transform: rotate(-3deg); }
+
+/* ---------- screen flipbook chrome ---------- */
+#hud { position: fixed; left: 50%; bottom: 14px; transform: translateX(-50%); display: flex; gap: 14px; align-items: center; z-index: 9;
+  background: rgba(20,14,10,.8); padding: 8px 14px; border-radius: 40px; color: #fff; font: 700 16px/1 var(--body); }
+#hud button { font: inherit; background: #e8893a; color: #fff; border: 0; border-radius: 30px; width: 42px; height: 34px; cursor: pointer; }
+@media print {
+  html, body { background: none; }
+  #stage { position: static; transform: none !important; }
+  .page { display: block !important; }
+  #hud { display: none; }
+}
+</style></head>
+<body><div id="stage">
+<section class="page cover" style="background-image:url(assets/arrival-bluebell.jpg)">
+  <div class="cover-band">
+    <div class="series">The Flying Fairweathers &middot; Episode 3 &middot; Hong Kong</div>
+    <h1>Otis Says Hello</h1>
+    <div class="cover-sub">A story about feeling shy &mdash; and one small wave.</div>
+  </div>
+</section>
+<section class="page crew">
+  <div class="ribbon wide"><span>Meet the Fairweathers!</span></div>
+  <div class="lineup"><img src="assets/lineup-crop.jpg" alt="">
+    <span style="left:18%">Otis</span><span style="left:34%">Kit</span><span style="left:49%">Gus</span>
+    <span style="left:67%">Mom</span><span style="left:86%">Dad &amp; Rudder</span></div>
+  <div class="note pawcard"><span class="tape"></span>
+    <div class="pawpic" style="background-image:url(assets/tram-station.jpg);background-size:827px 465px;background-position:-258px -12px;"></div>
+    <div class="cap">Paw-Paw <small>Mom&rsquo;s mom &mdash; and today&rsquo;s big hello!</small></div></div>
+  <div class="pno">2</div>
+</section>
+<section class="page story">
+  <div class="ribbon"><span>Where to?</span></div>
+  <div class="photo"><div class="pic" style="background-image:url(assets/kitchen-globe.jpg);background-size:1100px 619px;background-position:-0px 0px;"></div><span class="tape t1"></span><span class="tape t2"></span></div>
+  <div class="stickers"><div class="doodle" style="left:40px;top:10px"><svg width="110" height="70" viewBox="0 0 110 70" xmlns="http://www.w3.org/2000/svg"><path d="M8,38 C30,18 70,16 100,34 C70,52 30,54 8,38Z" fill="#9fc5e8" stroke="#4a6fa5" stroke-width="3"/><path d="M50,30 L36,8 L64,26Z M50,44 L38,64 L64,46Z" fill="#9fc5e8" stroke="#4a6fa5" stroke-width="3"/><circle cx="84" cy="32" r="3" fill="#333"/><path d="M88,40 q5,3 9,-1" fill="none" stroke="#333" stroke-width="2.5"/></svg></div></div>
+  <div class="text"><p>One morning in Maple Cove, Mom spun the globe. &ldquo;Guess where Bluebell flies today? We&rsquo;re going to see Paw-Paw!&rdquo;</p><p>Kit cheered. But Otis hugged his little blue plane tight. &ldquo;I only know Paw-Paw from the computer,&rdquo; he whispered.</p></div>
+  <div class="pno">3</div>
+</section>
+<section class="page story">
+  <div class="ribbon"><span>It’s okay to go quiet</span></div>
+  <div class="photo"><div class="pic" style="background-image:url(assets/kitchen-otis-leo.jpg);background-size:1100px 619px;background-position:-0px 0px;"></div><span class="tape t1"></span><span class="tape t2"></span></div>
+  <div class="stickers"><div class="note fact " style="transform:rotate(-2deg)"><span class="tape"></span><div class="dd"><svg width="150" height="110" viewBox="0 0 150 110" xmlns="http://www.w3.org/2000/svg"><rect x="8" y="46" width="22" height="40" fill="#f2c94c" stroke="#555" stroke-width="2.5"/><rect x="34" y="28" width="20" height="58" fill="#6fb3ea" stroke="#555" stroke-width="2.5"/><rect x="58" y="52" width="24" height="34" fill="#f09ac0" stroke="#555" stroke-width="2.5"/><path d="M84,86 C96,44 118,30 144,48 L144,86 Z" fill="#7cc576" stroke="#555" stroke-width="2.5"/><path d="M4,86 L146,86" stroke="#555" stroke-width="2.5"/><path d="M8,96 q9,-9 18,0 t18,0 t18,0 t18,0 t18,0 t18,0" fill="none" stroke="#3d8fd1" stroke-width="3"/><path d="M18,104 q9,-9 18,0 t18,0 t18,0 t18,0 t18,0" fill="none" stroke="#3d8fd1" stroke-width="3"/></svg></div><p>&ldquo;Hong Kong&rdquo; means <b>fragrant harbor</b>!</p></div></div>
+  <div class="text"><p>&ldquo;What if I go all quiet?&rdquo; asked Otis.</p><p>Dad crouched down beside him. &ldquo;Then you go quiet, buddy. That&rsquo;s okay.&rdquo;</p><p>Otis looked at the globe. &ldquo;But… why is it called Hong Kong?&rdquo;</p><p>&ldquo;It means <b>fragrant harbor</b>,&rdquo; said Mom. &ldquo;Fragrant? Like… smelly-nice?&rdquo; Otis scrunched his nose.</p></div>
+  <div class="pno">4</div>
+</section>
+<section class="page story">
+  <div class="ribbon"><span>Snug as a bun</span></div>
+  <div class="photo"><div class="pic" style="background-image:url(assets/cabin.jpg);background-size:1100px 619px;background-position:-0px 0px;"></div><span class="tape t1"></span><span class="tape t2"></span></div>
+  <div class="stickers"><div class="note gus" style="transform:rotate(3deg)"><span class="tape"></span><img src="assets/gus.jpg" alt=""><div class="cap">Gus</div></div></div>
+  <div class="text"><p>On Bluebell, Gus held up a paper bakery bag. &ldquo;Tuck your bag under the seat, snug as a bun!&rdquo;</p><p>Click, click went the seatbelts. Gus crouched beside Otis. &ldquo;My tummy feels wiggly,&rdquo; Otis whispered.</p><p>&ldquo;New hellos make my tummy wiggle too,&rdquo; said Gus kindly. &ldquo;You don&rsquo;t have to be brave all at once.&rdquo;</p></div>
+  <div class="pno">5</div>
+</section>
+<section class="page story">
+  <div class="ribbon"><span>Up in the clouds</span></div>
+  <div class="photo"><div class="pic" style="background-image:url(assets/flight-otis.jpg);background-size:1100px 619px;background-position:-0px 0px;"></div><span class="tape t1"></span><span class="tape t2"></span></div>
+  <div class="stickers"></div>
+  <div class="text"><p>Above the soft white clouds, the flight was calm and smooth.</p><p>&ldquo;Paw-Paw loves riding the tram up the Peak to watch the black kites,&rdquo; said Mom.</p><p>&ldquo;I&rsquo;ll say hi first,&rdquo; said Kit. &ldquo;Then you can just wave.&rdquo; &ldquo;A wave,&rdquo; Otis whispered. &ldquo;I can do a wave.&rdquo;</p><p>Then Dad&rsquo;s voice crackled over the speaker: &ldquo;What&rsquo;s a pilot&rsquo;s favorite snack? Plane crackers!&rdquo; Otis giggled.</p></div>
+  <div class="pno">6</div>
+</section>
+<section class="page story">
+  <div class="ribbon"><span>Hello, Paw-Paw!</span></div>
+  <div class="photo"><div class="pic" style="background-image:url(assets/tram-station.jpg);background-size:1100px 619px;background-position:-0px 0px;"></div><span class="tape t1"></span><span class="tape t2"></span></div>
+  <div class="stickers"><div class="step" style="transform:rotate(2deg)"><b>1</b><span>a tiny wave</span></div></div>
+  <div class="text"><p>At the Peak Tram station, there she was! Kit hurried into a great big hug.</p><p>Otis hid behind Dad&rsquo;s leg at first. Paw-Paw crouched down, a few steps away, and spoke to his little blue plane.</p><p>&ldquo;Hello, little plane. Do you like trains?&rdquo;</p><p>Otis lifted one hand and gave a tiny wave. Paw-Paw waved back, just as tiny.</p></div>
+  <div class="pno">7</div>
+</section>
+<section class="page story">
+  <div class="ribbon"><span>Can we share?</span></div>
+  <div class="photo"><div class="pic" style="background-image:url(assets/cafe-share.jpg);background-size:1100px 619px;background-position:-0px 0px;"></div><span class="tape t1"></span><span class="tape t2"></span></div>
+  <div class="stickers"><div class="note wordcard" style="transform:rotate(-1.5deg)"><span class="tape"></span><div class="lab">Rudder's word</div><div class="zh">唔該</div><div class="say">mm-GOY</div><p>Thank you, when someone helps you.</p></div></div>
+  <div class="text"><p>The café was so busy! Every little table was full. Paw-Paw smiled at a grandpa at a big round table. &ldquo;Can we share, please?&rdquo;</p><p>&ldquo;Please, sit!&rdquo; he said. &ldquo;Mm-GOY,&rdquo; said Paw-Paw.</p><p>Kit was giggling with Rudder and missed it. But Otis watched closely. &ldquo;In a busy café, we share tables,&rdquo; Paw-Paw whispered. &ldquo;You just ask nicely.&rdquo;</p></div>
+  <div class="pno">8</div>
+</section>
+<section class="page story">
+  <div class="ribbon"><span>Pineapple buns</span></div>
+  <div class="photo"><div class="pic" style="background-image:url(assets/cafe-buns.jpg);background-size:1100px 619px;background-position:-0px 0px;"></div><span class="tape t1"></span><span class="tape t2"></span></div>
+  <div class="stickers"><div class="note fact " style="transform:rotate(2deg)"><span class="tape"></span><div class="dd"><svg width="150" height="110" viewBox="0 0 150 110" xmlns="http://www.w3.org/2000/svg"><ellipse cx="62" cy="62" rx="48" ry="38" fill="#eaa94d" stroke="#8a5a1f" stroke-width="3"/><path d="M28,46 L96,84 M40,36 L110,72 M22,62 L82,96 M52,30 L112,58 M94,34 L36,84 M110,50 L50,92 M78,28 L28,60 M112,68 L66,96" stroke="#c9822c" stroke-width="2.5"/><g transform="translate(118,52)"><path d="M0,6 C-12,6 -14,34 0,40 C14,34 12,6 0,6Z" fill="#f2c94c" stroke="#555" stroke-width="2.5"/><path d="M0,6 L-8,-8 M0,6 L0,-12 M0,6 L8,-8" stroke="#4aa35a" stroke-width="3.5" stroke-linecap="round"/></g><path d="M96,92 L140,48 M140,92 L96,48" stroke="#d93b3b" stroke-width="5" stroke-linecap="round"/></svg></div><p>No pineapple in a <b>pineapple bun</b>! The sugar top just looks like pineapple skin.</p></div></div>
+  <div class="text"><p>Then came warm, golden pineapple buns! &ldquo;Pineapple! My favorite fruit!&rdquo; said Dad.</p><p>He broke his bun open and peered inside. &ldquo;Wait… where&rsquo;s the pineapple?&rdquo;</p><p>Paw-Paw laughed. &ldquo;There&rsquo;s no pineapple in a pineapple bun! The crunchy sugar top just looks like pineapple skin.&rdquo;</p><p>&ldquo;Still delicious!&rdquo; said Dad.</p></div>
+  <div class="pno">9</div>
+</section>
+<section class="page story">
+  <div class="ribbon"><span>Up, up, up!</span></div>
+  <div class="photo"><div class="pic" style="background-image:url(assets/tram-station.jpg);background-size:1431px 805px;background-position:-331px -53px;"></div><span class="tape t1"></span><span class="tape t2"></span></div>
+  <div class="stickers"><div class="doodle" style="left:30px;top:0"><svg width="170" height="110" viewBox="0 0 170 110" xmlns="http://www.w3.org/2000/svg"><path d="M6,100 L164,40" stroke="#8a6b4a" stroke-width="4" stroke-linecap="round"/><g transform="rotate(-20 85 60)"><rect x="36" y="34" width="98" height="44" rx="10" fill="#2f7d4f" stroke="#1b4a2e" stroke-width="3"/><rect x="46" y="42" width="18" height="18" rx="3" fill="#cfe9f7" stroke="#1b4a2e" stroke-width="2"/><rect x="70" y="42" width="18" height="18" rx="3" fill="#cfe9f7" stroke="#1b4a2e" stroke-width="2"/><rect x="94" y="42" width="18" height="18" rx="3" fill="#cfe9f7" stroke="#1b4a2e" stroke-width="2"/><rect x="36" y="64" width="98" height="5" fill="#e8d9a0"/><circle cx="54" cy="82" r="7" fill="#444"/><circle cx="116" cy="82" r="7" fill="#444"/></g></svg></div></div>
+  <div class="text"><p>Up, up, up the steep hill went the little green tram.</p><p>&ldquo;I rode this tram every Saturday,&rdquo; said Paw-Paw, &ldquo;when I was Otis&rsquo;s size.&rdquo;</p><p>&ldquo;Look!&rdquo; giggled Kit. &ldquo;The buildings are leaning!&rdquo;</p><p>&ldquo;They only look tipped,&rdquo; Paw-Paw laughed. &ldquo;The hill is so steep, it tricks your eyes.&rdquo;</p></div>
+  <div class="pno">10</div>
+</section>
+<section class="page story">
+  <div class="ribbon"><span>Black kites</span></div>
+  <div class="photo"><div class="pic" style="background-image:url(assets/peak-terrace.jpg);background-size:2201px 1238px;background-position:-1101px -37px;"><div class="ovl"><svg width="1100" height="619" viewBox="0 0 1100 619" xmlns="http://www.w3.org/2000/svg"><g transform="translate(240,85) rotate(-8) scale(0.85)"><path d="M0,0 C-30,-24 -72,-20 -104,12 C-72,0 -42,4 -16,20 L0,36 L16,20 C42,4 72,0 104,12 C72,-20 30,-24 0,0 Z" fill="#4a3b34" stroke="#2b211d" stroke-width="3" stroke-linejoin="round"/></g><g transform="translate(600,50) rotate(6) scale(0.65)"><path d="M0,0 C-30,-24 -72,-20 -104,12 C-72,0 -42,4 -16,20 L0,36 L16,20 C42,4 72,0 104,12 C72,-20 30,-24 0,0 Z" fill="#4a3b34" stroke="#2b211d" stroke-width="3" stroke-linejoin="round"/></g><g transform="translate(980,120) rotate(-5) scale(0.75)"><path d="M0,0 C-30,-24 -72,-20 -104,12 C-72,0 -42,4 -16,20 L0,36 L16,20 C42,4 72,0 104,12 C72,-20 30,-24 0,0 Z" fill="#4a3b34" stroke="#2b211d" stroke-width="3" stroke-linejoin="round"/></g></svg></div></div><span class="tape t1"></span><span class="tape t2"></span></div>
+  <div class="stickers"><div class="note fact " style="transform:rotate(-2deg)"><span class="tape"></span><div class="dd"><svg width="150" height="110" viewBox="0 0 150 110" xmlns="http://www.w3.org/2000/svg"><g transform="translate(75,50) scale(.62)"><path d="M0,0 C-30,-24 -72,-20 -104,12 C-72,0 -42,4 -16,20 L0,36 L16,20 C42,4 72,0 104,12 C72,-20 30,-24 0,0 Z" fill="#4a3b34" stroke="#2b211d" stroke-width="4"/></g><path d="M22,98 q6,-12 0,-22 M75,102 q6,-12 0,-22 M128,98 q6,-12 0,-22" fill="none" stroke="#e07a3f" stroke-width="3.5" stroke-linecap="round"/></svg></div><p>Black kites ride <b>warm air</b>, so they glide with only a few flaps!</p></div><div class="step" style="transform:rotate(3deg)"><b>2</b><span>a whispered question</span></div></div>
+  <div class="text"><p>At the top, the whole harbor sparkled far below. Black kites glided past on still wings. Rudder flapped and flapped.</p><p>Otis shuffled closer to Paw-Paw. &ldquo;But… why don&rsquo;t they flap?&rdquo; he whispered.</p><p>&ldquo;Good question!&rdquo; Paw-Paw whispered back. &ldquo;The sun warms the hill, and warm air rises. The kites ride it up, like an elevator.&rdquo;</p></div>
+  <div class="pno">11</div>
+</section>
+<section class="page story">
+  <div class="ribbon"><span>Every table is full!</span></div>
+  <div class="photo"><div class="pic" style="background-image:url(assets/peak-terrace.jpg);background-size:1100px 619px;background-position:-0px 0px;"></div><span class="tape t1"></span><span class="tape t2"></span></div>
+  <div class="stickers"></div>
+  <div class="text"><p>Dad came back with hot egg waffles. &ldquo;Kit, Otis, can you find us a place to sit?&rdquo; asked Paw-Paw.</p><p>&ldquo;Easy!&rdquo; said Kit. She checked one table. Full! She checked another. Full!</p><p>&ldquo;Every table is full!&rdquo; Kit&rsquo;s shoulders drooped. &ldquo;We&rsquo;ll have to stand. Or wait forever.&rdquo;</p></div>
+  <div class="pno">12</div>
+</section>
+<section class="page story">
+  <div class="ribbon"><span>Otis asks</span></div>
+  <div class="photo"><div class="pic" style="background-image:url(assets/peak-terrace.jpg);background-size:1871px 1052px;background-position:-385px -385px;"></div><span class="tape t1"></span><span class="tape t2"></span></div>
+  <div class="stickers"><div class="step" style="transform:rotate(-2deg)"><b>3</b><span>ask &mdash; and say thank you</span></div></div>
+  <div class="text"><p>Otis looked around quietly. He spotted a round table with three empty stools.</p><p>&ldquo;Kit,&rdquo; he whispered, &ldquo;we can share. Like Paw-Paw did at breakfast. You just ask nicely.&rdquo;</p><p>Otis took a big breath. &ldquo;Hello. Can we share, please?&rdquo;</p><p>&ldquo;Of course! Sit, sit,&rdquo; said the dad. &ldquo;Mm-GOY!&rdquo; said Otis, beaming.</p></div>
+  <div class="pno">13</div>
+</section>
+<section class="page story">
+  <div class="ribbon"><span>A little tram</span></div>
+  <div class="photo"><div class="pic" style="background-image:url(assets/tram-station.jpg);background-size:1651px 928px;background-position:-473px -155px;"></div><span class="tape t1"></span><span class="tape t2"></span></div>
+  <div class="stickers"><div class="note fact " style="transform:rotate(-2deg)"><span class="tape"></span><div class="dd"><svg width="170" height="110" viewBox="0 0 170 110" xmlns="http://www.w3.org/2000/svg"><path d="M6,100 L164,40" stroke="#8a6b4a" stroke-width="4" stroke-linecap="round"/><g transform="rotate(-20 85 60)"><rect x="36" y="34" width="98" height="44" rx="10" fill="#2f7d4f" stroke="#1b4a2e" stroke-width="3"/><rect x="46" y="42" width="18" height="18" rx="3" fill="#cfe9f7" stroke="#1b4a2e" stroke-width="2"/><rect x="70" y="42" width="18" height="18" rx="3" fill="#cfe9f7" stroke="#1b4a2e" stroke-width="2"/><rect x="94" y="42" width="18" height="18" rx="3" fill="#cfe9f7" stroke="#1b4a2e" stroke-width="2"/><rect x="36" y="64" width="98" height="5" fill="#e8d9a0"/><circle cx="54" cy="82" r="7" fill="#444"/><circle cx="116" cy="82" r="7" fill="#444"/></g></svg></div><p>Paw-Paw&rsquo;s toy tram from when she was little &mdash; now it&rsquo;s <b>Otis&rsquo;s</b>!</p></div></div>
+  <div class="text"><p>&ldquo;I&rsquo;m good at watching,&rdquo; Otis said with a shy grin. &ldquo;The best watcher,&rdquo; said Kit. &ldquo;Thanks, Otis!&rdquo;</p><p>Before they flew home, Paw-Paw crouched down. &ldquo;This was mine when I was little. Now it&rsquo;s yours.&rdquo;</p><p>A toy Peak Tram! Otis set his little plane on top. Then he hugged Paw-Paw, all on his own. &ldquo;Bye, Paw-Paw.&rdquo;</p></div>
+  <div class="pno">14</div>
+</section>
+<section class="page journal" style="background-image:url(assets/journal-hongkong.jpg)">
+  <div class="polaroid"><div class="ppic" style="background-image:url(assets/tram-station.jpg)"></div>
+    <div class="pcap">Paw-Paw, Kit and Otis at the Peak!</div></div>
+  <div class="pno light">15</div>
+</section>
+<section class="page end">
+  <div class="ribbon wide"><span>Start small</span></div>
+  <div class="endcol">
+    <p class="big">Feeling shy is okay. Start with one small hello.</p>
+    <div class="steps3"><div><b>1</b>a tiny wave</div><div><b>2</b>a whispered question</div><div><b>3</b>&ldquo;Hello!&rdquo; and &ldquo;mm-GOY!&rdquo;</div></div>
+    <div class="quiz"><h3>Can you remember?</h3>
+      <p>What does &ldquo;Hong Kong&rdquo; mean? <i>Fragrant harbor!</i></p>
+      <p>How do black kites glide? <i>They ride the warm air, like an elevator.</i></p>
+      <p>What&rsquo;s inside a pineapple bun? <i>No pineapple!</i></p></div>
+  </div>
+  <div class="rudder"><div class="note wordcard big"><span class="tape"></span><img src="assets/rudder.jpg" alt="">
+    <div class="zh">唔該</div><div class="say">mm-GOY!</div><p>Thank you, when someone helps you.</p></div></div>
+  <div class="theend">The End</div>
+  <div class="pno">16</div>
+</section></div>
+<div id="hud"><button id="prev">&larr;</button><span id="pos"></span><button id="next">&rarr;</button></div>
+<script>(function () {
+  var pages = Array.prototype.slice.call(document.querySelectorAll('.page'));
+  var stage = document.getElementById('stage');
+  var pos = document.getElementById('pos');
+  var i = 0;
+
+  function fit() {
+    var s = Math.min(window.innerWidth / 1920, (window.innerHeight - 56) / 1080);
+    stage.style.transform = 'scale(' + s + ')';
+    stage.style.marginLeft = (-960 * s) + 'px';
+    stage.style.marginTop = (-540 * s - 24) + 'px';
+    stage.style.left = '50%';
+    stage.style.top = '50%';
+  }
+  function show(n) {
+    i = Math.max(0, Math.min(pages.length - 1, n));
+    pages.forEach(function (p, k) { p.classList.toggle('active', k === i); });
+    pos.textContent = (i + 1) + ' / ' + pages.length;
+    try { history.replaceState(null, '', '#' + (i + 1)); } catch (e) {}
+  }
+  document.getElementById('prev').onclick = function () { show(i - 1); };
+  document.getElementById('next').onclick = function () { show(i + 1); };
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowRight' || e.key === ' ') show(i + 1);
+    if (e.key === 'ArrowLeft') show(i - 1);
+  });
+  window.addEventListener('resize', fit);
+  fit();
+  show((parseInt((location.hash || '#1').slice(1), 10) || 1) - 1);
+})();
+</script></body></html>
